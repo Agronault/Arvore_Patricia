@@ -9,6 +9,14 @@ public class ArvorePatricia {
     private NoArvorePatricia raiz;
     private final int numeroDeBitsNaChave;
     private int nosVisitadosPesquisa;
+
+    public int getNosVisitadosPesquisa() {
+        return nosVisitadosPesquisa;
+    }
+
+    public int getCaracteresDistintos() {
+        return caracteresDistintos;
+    }
     private int caracteresDistintos;
 
     public ArvorePatricia(int nbitsChave) {
@@ -86,12 +94,25 @@ public class ArvorePatricia {
             else
                 aux=((NoInternoArvorePatricia)aux).filhoEsquerda;
         }
-        //TODO
+        //NoArvorePatricia interno= criaNoInterno(nosVisitadosPesquisa, aux, raiz);
+        return insereEntre(chaveInsercao, aux, ((NoInternoArvorePatricia)aux).indice);
         }
     }
     
     private NoArvorePatricia insereEntre(char chaveInsercao, NoArvorePatricia raizAtual,int posicaoAtual){
-    //TODO
+        NoInternoArvorePatricia aux=null;
+        if(!verificaNoExterno(raizAtual)) aux= ((NoInternoArvorePatricia)raizAtual);
+        if(verificaNoExterno(raizAtual)|| posicaoAtual< aux.indice){
+        NoArvorePatricia replace1 = criaNoExterno(chaveInsercao);
+        if(testaBit(posicaoAtual, chaveInsercao)==1) return criaNoInterno(posicaoAtual, raizAtual, replace1);
+        return criaNoInterno(posicaoAtual, replace1, raizAtual);
+        }else{
+        if(testaBit(posicaoAtual, chaveInsercao)==1)
+            aux.filhoDireita=insereEntre(chaveInsercao, aux.filhoDireita, posicaoAtual);
+        else
+            aux.filhoEsquerda=insereEntre(chaveInsercao, aux.filhoEsquerda, posicaoAtual);
+        return aux;
+            }
     }
 
     private boolean verificaNoExterno(NoArvorePatricia noAtual) {
@@ -114,6 +135,10 @@ public class ArvorePatricia {
     aux.chave=chaveInsercao;
     aux.quantidade=1;
     return aux;
+    }
+    
+    public void insere(char chaveInsercao){
+    this.insere(chaveInsercao, raiz);
     }
 
 }
