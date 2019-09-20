@@ -1,13 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package lista5;
 
 /**
  *
- * @author aluno
+ * @author Alexandre Luis Ribeiro Martins
  */
 public class ArvorePatricia {
 
@@ -57,35 +52,46 @@ public class ArvorePatricia {
     }
 
     private int pesquisa(char chavePesquisa, NoArvorePatricia raizAtual) {
-        int result = 0;
-
-        if (raizAtual instanceof NoInternoArvorePatricia) {
-            for (int i = 0; i < this.numeroDeBitsNaChave; i++) {
-                if (testaBit(i, chavePesquisa) == ((NoInternoArvorePatricia) raizAtual).indice) {
-                    switch (testaBit(i + 1, chavePesquisa)) {
-                        case 1:
-                            if (((NoInternoArvorePatricia) raizAtual).filhoDireita == null) {
-                                System.out.println("Vocábulo inexistente");
-                                return 0;
-                            }
-                            result = pesquisa(chavePesquisa, ((NoInternoArvorePatricia) raizAtual).filhoDireita);
-                            break;
-                        case 0:
-                            if (((NoInternoArvorePatricia) raizAtual).filhoEsquerda == null) {
-                                System.out.println("Vocábulo inexistente");
-                                return 0;
-                            }
-                            result = pesquisa(chavePesquisa, ((NoInternoArvorePatricia) raizAtual).filhoEsquerda);
-                            break;
-                    }
-                }
+        
+        if(raizAtual instanceof NoInternoArvorePatricia){
+            switch(testaBit(((NoInternoArvorePatricia) raizAtual).indice, chavePesquisa)){
+                case 1:
+                    return pesquisa(chavePesquisa, ((NoInternoArvorePatricia) raizAtual).filhoDireita);
+                case 0:
+                    return pesquisa(chavePesquisa, ((NoInternoArvorePatricia) raizAtual).filhoEsquerda);
             }
-
-        } else if (raizAtual instanceof NoExternoArvorePatricia) {
-            result = ((NoExternoArvorePatricia) raizAtual).quantidade;
+        }else{
+            if(((NoExternoArvorePatricia)raizAtual).chave==chavePesquisa) return ((NoExternoArvorePatricia)raizAtual).quantidade;
+            else return 0;
         }
-
-        return result;
+     return 0;   
+    }
+    
+    private NoArvorePatricia insere(char chaveInsercao, NoArvorePatricia raizAtual){
+        if(raizAtual==null) return criaNoExterno(chaveInsercao);
+        
+        if(verificaNoExterno(raizAtual)){
+        int i;
+        for(i=1; testaBit(i, chaveInsercao)==testaBit(i, ((NoExternoArvorePatricia)raizAtual).chave) && i<=this.numeroDeBitsNaChave ;i++);
+        if(i>numeroDeBitsNaChave) {
+        ((NoExternoArvorePatricia)raizAtual).quantidade++;
+        return raizAtual;
+        }else
+            return this.insereEntre(chaveInsercao, raizAtual, i);
+        }else{
+        NoArvorePatricia aux= ((NoInternoArvorePatricia)raizAtual);
+        while(!verificaNoExterno(aux)){
+            if(testaBit(((NoInternoArvorePatricia)aux).indice, chaveInsercao)==1)
+                aux=((NoInternoArvorePatricia)aux).filhoDireita;
+            else
+                aux=((NoInternoArvorePatricia)aux).filhoEsquerda;
+        }
+        //TODO
+        }
+    }
+    
+    private NoArvorePatricia insereEntre(char chaveInsercao, NoArvorePatricia raizAtual,int posicaoAtual){
+    //TODO
     }
 
     private boolean verificaNoExterno(NoArvorePatricia noAtual) {
