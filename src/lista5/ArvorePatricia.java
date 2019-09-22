@@ -48,19 +48,19 @@ public class ArvorePatricia {
     }
 
     private int testaBit(int posicaoAtual, char chaveInsercao) {
-        int posicaoBack = this.numeroDeBitsNaChave - posicaoAtual;
-
-        int atual = 0;
-        while (atual < posicaoBack - 1) {
-            chaveInsercao /= 2;
-            atual++;
+        if(posicaoAtual==0){
+        return 0;
+        }
+        byte aux= (byte)chaveInsercao;
+        for(int i=1; i<=this.numeroDeBitsNaChave-posicaoAtual; i++){
+        aux /= 2;
         }
 
-        return chaveInsercao % 2;
+        return aux % 2;
     }
 
     private int pesquisa(char chavePesquisa, NoArvorePatricia raizAtual) {
-        
+        this.nosVisitadosPesquisa++;
         if(raizAtual instanceof NoInternoArvorePatricia){
             switch(testaBit(((NoInternoArvorePatricia) raizAtual).indice, chavePesquisa)){
                 case 1:
@@ -76,26 +76,34 @@ public class ArvorePatricia {
     }
     
     private NoArvorePatricia insere(char chaveInsercao, NoArvorePatricia raizAtual){
-        if(raizAtual==null) return criaNoExterno(chaveInsercao);
+        if(raizAtual==null) {
+            this.caracteresDistintos++;
+            this.raiz = criaNoExterno(chaveInsercao);
+            return raizAtual;
+        }
         
-        if(verificaNoExterno(raizAtual)){
-        int i;
-        for(i=1; testaBit(i, chaveInsercao)==testaBit(i, ((NoExternoArvorePatricia)raizAtual).chave) && i<=this.numeroDeBitsNaChave ;i++);
-        if(i>numeroDeBitsNaChave) {
-        ((NoExternoArvorePatricia)raizAtual).quantidade++;
-        return raizAtual;
-        }else
-            return this.insereEntre(chaveInsercao, raizAtual, i);
-        }else{
-        NoArvorePatricia aux= ((NoInternoArvorePatricia)raizAtual);
+        NoArvorePatricia aux= raizAtual;
         while(!verificaNoExterno(aux)){
             if(testaBit(((NoInternoArvorePatricia)aux).indice, chaveInsercao)==1)
                 aux=((NoInternoArvorePatricia)aux).filhoDireita;
             else
                 aux=((NoInternoArvorePatricia)aux).filhoEsquerda;
         }
-        return insereEntre(chaveInsercao, aux, ((NoInternoArvorePatricia)aux).indice);
+        
+        
+        if(verificaNoExterno(aux)){
+        int i=1;
+        //for(i=1; testaBit(i, chaveInsercao)==testaBit(i, ((NoExternoArvorePatricia)aux).chave) && i<=this.numeroDeBitsNaChave ;i++);
+        while(i<=this.numeroDeBitsNaChave && this.testaBit(i, chaveInsercao)== this.testaBit(i, ((NoExternoArvorePatricia)aux).chave))
+            i++;
+        if(i>numeroDeBitsNaChave) {
+        ((NoExternoArvorePatricia)aux).quantidade++;
+        return raizAtual;
+        }else
+            this.caracteresDistintos++;
+            return this.insereEntre(chaveInsercao, raizAtual, i);
         }
+        return aux;
     }
     
     private NoArvorePatricia insereEntre(char chaveInsercao, NoArvorePatricia raizAtual,int posicaoAtual){
@@ -115,10 +123,7 @@ public class ArvorePatricia {
     }
 
     private boolean verificaNoExterno(NoArvorePatricia noAtual) {
-        if (noAtual instanceof NoExternoArvorePatricia) {
-            return true;
-        }
-        return false;
+        return (noAtual instanceof NoExternoArvorePatricia);
     }
 
     private NoArvorePatricia criaNoInterno(int posicaoAtual, NoArvorePatricia filhoEsq, NoArvorePatricia filhoDir) {
@@ -137,7 +142,12 @@ public class ArvorePatricia {
     }
     
     public void insere(char chaveInsercao){
-    this.insere(chaveInsercao, raiz);
+    this.insere(chaveInsercao, this.raiz);
+    }
+    
+    public void pesquisa(char chavePesquisa){
+        this.nosVisitadosPesquisa=0;
+    this.pesquisa(chavePesquisa, raiz);
     }
 
 }
