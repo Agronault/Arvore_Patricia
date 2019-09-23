@@ -55,7 +55,6 @@ public class ArvorePatricia {
         for (int i = 1; i <= this.numeroDeBitsNaChave - posicaoAtual; i++) {
             aux /= 2;
         }
-
         return aux % 2;
     }
 
@@ -92,8 +91,7 @@ public class ArvorePatricia {
                 aux = ((NoInternoArvorePatricia) aux).filhoEsquerda;
             }
         }
-        
-        
+    
         if (verificaNoExterno(aux)) {
             int i = 1;
             //for(i=1; testaBit(i, chaveInsercao)==testaBit(i, ((NoExternoArvorePatricia)aux).chave) && i<=this.numeroDeBitsNaChave ;i++);
@@ -138,9 +136,8 @@ public class ArvorePatricia {
     }
 
     private boolean verificaNoExterno(NoArvorePatricia noAtual) {
-        Class classe= noAtual.getClass();
-        return classe.getName().equals(NoExternoArvorePatricia.class.getName());
-    }
+        return noAtual instanceof NoExternoArvorePatricia; 
+   }
 
     private NoArvorePatricia criaNoInterno(int posicaoAtual, NoArvorePatricia filhoEsq, NoArvorePatricia filhoDir) {
         NoInternoArvorePatricia aux = new NoInternoArvorePatricia();
